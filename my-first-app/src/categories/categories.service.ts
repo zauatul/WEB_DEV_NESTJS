@@ -1,0 +1,16 @@
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class CategoriesService 
+{
+    private categories = [
+        { id: 1, name: 'Category 1' },
+        { id: 2, name: 'Category 2' },
+        { id: 3, name: 'Category 3' }
+    ];
+
+    getAllCategories()
+    {
+        return this.categories;
+    }
+}
