@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CourseService } from 'src/course/course.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class EnrollmentService 
 {
-    constructor(private couseService: CourseService){}
+    constructor(private couseService: CourseService,
+         @Inject(forwardRef(() => NotificationService))
+        private readonly notificationService: NotificationService
+    ){}
 
     private students : any[] = [
         {id: 1, studentName: "Nahid", courseId: 2}
@@ -18,15 +22,22 @@ export class EnrollmentService
     enrollStudent(student: {studentName: string; courseId: string})
     {
         const course = this.couseService.getCourseById(Number(student.courseId))
-        const st = {
+        
+        if(course)
+        {
+            const st = {
             id: this.students.length + 1,
             ...student
-        }
-        this.students.push(st);
+            }
+            this.students.push(st);
 
-        return { message: 'Student enrolled successfully', 
-                student: student.studentName, 
-                course: course }
+
+            const notification =this.notificationService.sendNotification({studentName:student.studentName,
+                message:'Enrollment Successful' });
+
+            return {notification: notification, enrollment: st}
+        }
+        throw new NotFoundException();
 
     }
 }

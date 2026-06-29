@@ -25,7 +25,7 @@ export class CourseService
 
         return{
             message:"Course Fetched",
-            data: course
+            id
         }
     }
 
@@ -39,7 +39,7 @@ export class CourseService
 
         return{
             message:"Course created",
-            data: newCourse
+            data: {name: course.name, code: course.code }
         }
     }
 }
